@@ -29,13 +29,15 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+ <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
 
     <application
-        android:icon="@drawable/superquick"
+        android:icon="@drawable/contacthub"
         android:label="@string/application_name"
-        android:process="android.superquick" >
+        android:process="android.contacthub" >
         <activity
-            android:name=".quick.SuperQuick"
+            android:name="com.durgesh.contacthub.ContactHub"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
             android:launchMode="singleTask"
@@ -49,12 +51,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.durgesh.quick.squick.SQDirectDialActivity"
+            android:name="com.durgesh.contacthub.squick.DirectDialActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                
             </intent-filter>
         </activity>
         <activity
@@ -62,12 +65,13 @@
             android:label="@string/application_name" >
         </activity>
         <activity
-            android:name="com.durgesh.quick.squick.SQDirectAppActivity"
+            android:name="com.durgesh.contacthub.squick.DirectAppActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/application_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" 
+                    android:configChanges="keyboardHidden|orientation"/>
             </intent-filter>
         </activity>
         <activity

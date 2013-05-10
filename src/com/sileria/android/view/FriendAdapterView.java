@@ -88,7 +88,7 @@ public abstract class FriendAdapterView<T extends Adapter> extends AdapterView<T
 	/**
 	 * The position of the first child displayed
 	 */
-	@ViewDebug.ExportedProperty(category = "scrolling")
+	//@ViewDebug.ExportedProperty(category = "scrolling")
 	protected int mFirstPosition = 0;
 
 	/**
@@ -153,7 +153,7 @@ public abstract class FriendAdapterView<T extends Adapter> extends AdapterView<T
 	 * The position within the adapter's data set of the item to select
 	 * during the next layout.
 	 */
-	@ViewDebug.ExportedProperty(category = "list")
+	//@ViewDebug.ExportedProperty(category = "list")
 	protected int mNextSelectedPosition = INVALID_POSITION;
 
 	/**
@@ -164,7 +164,7 @@ public abstract class FriendAdapterView<T extends Adapter> extends AdapterView<T
 	/**
 	 * The position within the adapter's data set of the currently selected item.
 	 */
-	@ViewDebug.ExportedProperty(category = "list")
+	//@ViewDebug.ExportedProperty(category = "list")
 	protected int mSelectedPosition = INVALID_POSITION;
 
 	/**
@@ -180,7 +180,7 @@ public abstract class FriendAdapterView<T extends Adapter> extends AdapterView<T
 	/**
 	 * The number of items in the current adapter.
 	 */
-	@ViewDebug.ExportedProperty(category = "list")
+//	@ViewDebug.ExportedProperty(category = "list")
 	protected int mItemCount;
 
 	/**

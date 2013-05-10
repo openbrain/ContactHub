@@ -18,22 +18,22 @@ package com.durgesh.view;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.WindowManager;
+import android.widget.ImageView;
 
 import com.durgesh.R;
-import com.durgesh.quick.squick.SQDirectAppActivity;
-import com.durgesh.quick.squick.SQDirectDialActivity;
+import com.durgesh.contacthub.squick.DirectAppActivity;
+import com.durgesh.contacthub.squick.DirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -41,16 +41,17 @@ import com.durgesh.util.Constants;
  * 
  * @author durgesht
  */
-public abstract class SQMainVeiw extends View implements OnTouchListener {
+public abstract class SQMainVeiw extends View {
     public Context context;
-    public SQMainVeiw sqView;
+    public View sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private static float barSize = 18;
-    private static final int SQ_VIEW_HEIGHT = 25;
+    private static float WIDTH = 50;
+    private static final int HEIGHT = 300;
     // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     int shortcutSelector;
     WindowManager windowsmanger;
+    ImageView facebook, twitter, linkdin, contact;
 
     public SQMainVeiw(Context context) {
         super(context);
@@ -58,93 +59,16 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         inflateView();
     }
 
-    private final GestureDetector gdt = new GestureDetector(new GestureListener());
-
-    @Override
-    public boolean onTouch(final View v, final MotionEvent event) {
-        gdt.onTouchEvent(event);
-        return true;
-    }
-
-    private final class GestureListener extends SimpleOnGestureListener {
-
-        private static final int SWIPE_MIN_DISTANCE = 4;
-        private static final int SWIPE_THRESHOLD_VELOCITY = 10;
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                onRightToLeft();
-                return true;
-            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
-                onLeftToRight();
-                return true;
-            }
-            if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-                onBottomToTop();
-                return true;
-            } else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
-                onTopToBottom();
-                return true;
-            }
-            return true;
-        }
-    }
-
-    public abstract void onRightToLeft();
-
-    public abstract void onLeftToRight();
-
-    public abstract void onBottomToTop();
-
-    public abstract void onTopToBottom();
-
     /**
      * update the view position on the screen
      */
     public abstract void updateViewParameter();
 
-    
-    
-    /**
-     * Launch the shortcut selector base on the view on which the finger is swap
-     */
-    protected void launchShorcut() {
-        switch (shortcutSelector) {
-        case Constants.PHONE_CALL:
-        case Constants.MESSAGE: {
-            Intent dialerActivity = new Intent(context, SQDirectDialActivity.class);
-            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-            context.startActivity(dialerActivity);
-            break;
-        }
-        case Constants.APP: {
-            Intent dialerActivity = new Intent(context, SQDirectAppActivity.class);
-            dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            dialerActivity.putExtra(Constants.SUPERQUICK, shortcutSelector);
-            context.startActivity(dialerActivity);
-            break;
-        }
-        case Constants.CONTACT: {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse("content://contacts/people/"));
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            context.startActivity(intent);
-            break;
-        }
-        default:
-            break;
-        }
-    }
-
-
     private void inflateView() {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        sqView = this;
-        //sqView.setBackgroundColor(Color.LTGRAY);
-        sqView.setOnTouchListener(this);
+        LayoutInflater view = LayoutInflater.from(context);
+        sqView = view.inflate(R.layout.contacthub, null);
+        // sqView.setOnTouchListener(this);
         windowsmanger.addView(sqView, makeOverlayParams());
     }
 
@@ -174,13 +98,12 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         sqScreenWidth = display.getWidth();
         sqScreenHeight = display.getHeight();
         // To give View the size according to Screen size take ration from screen size
-        int displayHeight = sqScreenHeight * SQ_VIEW_HEIGHT / 100;
         WindowManager.LayoutParams paramsRB = (WindowManager.LayoutParams) sqView.getLayoutParams();
         paramsRB.x = xAxis == 0 ? 0 : sqScreenWidth;
         paramsRB.y = sqScreenHeight / ration;
         applyScaling(paramsRB);
-        paramsRB.height = displayHeight;
-        paramsRB.gravity = gravity != -10 ? gravity : Gravity.NO_GRAVITY;
+        paramsRB.height = HEIGHT;
+        paramsRB.gravity = gravity;
         applyTransparency(paramsRB);
         windowsmanger.updateViewLayout(sqView, paramsRB);
 
@@ -217,22 +140,29 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
         } else if (size.equals("tiny")) {
             buttonMult = 0.5f;
         }
-        params.width = (int) (barSize * buttonMult);
+        params.width = (int) (WIDTH * buttonMult);
+        // params.height = (int) (HEIGHT * buttonMult);
     }
 
     public void viewSelector(String selector) {
         if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
             shortcutSelector = Constants.PHONE_CALL;
-            sqView.setBackgroundColor(Color.GREEN);
+            ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);
+            facebookContact.setOnTouchListener(new FacebookView(context));
+            ImageView twitterContact = (ImageView) sqView.findViewById(R.id.twitter);
+            twitterContact.setOnTouchListener(new TwitterView(context));
+            ImageView linkedInContact = (ImageView) sqView.findViewById(R.id.linkedin);
+            linkedInContact.setOnTouchListener(new LinkedInView(context));
+            // sqView.setBackgroundResource(R.drawable.facebook);
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
             shortcutSelector = Constants.MESSAGE;
-            sqView.setBackgroundColor(Color.YELLOW);
+            // sqView.setBackgroundResource(R.drawable.twitter);
         } else if (selector.equals(context.getResources().getString(R.string.pref_leftbottombar_title))) {
             shortcutSelector = Constants.CONTACT;
-            sqView.setBackgroundColor(Color.BLUE);
+            // sqView.setBackgroundResource(R.drawable.linkedin);
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbottombar_title))) {
             shortcutSelector = Constants.APP;
-            sqView.setBackgroundColor(Color.RED);
+            // sqView.setBackgroundResource(R.drawable.linkedin);
         }
     }
 
@@ -241,8 +171,8 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @return
      */
-    public SQMainVeiw getView() {
-        return this;
+    public View getView() {
+        return sqView;
     }
 
     /**
@@ -250,7 +180,7 @@ public abstract class SQMainVeiw extends View implements OnTouchListener {
      * 
      * @return
      */
-    public SQMainVeiw setViewNull() {
+    public View setViewNull() {
         return sqView = null;
     }
 

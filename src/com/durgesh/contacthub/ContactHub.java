@@ -13,7 +13,7 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.durgesh.quick;
+package com.durgesh.contacthub;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,7 +29,7 @@ import com.durgesh.service.SQService;
  * 
  * @author durgesht
  */
-public class SuperQuick extends Activity {
+public class ContactHub extends Activity {
 
     private final static int PREFERENCE = 10;
 

@@ -361,7 +361,7 @@ public class HorzListView extends FriendAdapterView<ListAdapter> implements Gest
 
 	@Override
 	protected ViewGroup.LayoutParams generateLayoutParams (ViewGroup.LayoutParams p) {
-		return new LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT );
+		return new LayoutParams( ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT );
 	}
 
 	@Override

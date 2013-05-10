@@ -23,11 +23,9 @@ import android.hardware.SensorManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.view.OrientationEventListener;
+import android.view.View;
 import android.view.WindowManager;
 
-import com.durgesh.view.BottomLeftView;
-import com.durgesh.view.BottomRightView;
-import com.durgesh.view.SQMainVeiw;
 import com.durgesh.view.TopLeftView;
 import com.durgesh.view.TopRightView;
 import com.sileria.android.Kit;
@@ -40,9 +38,7 @@ import com.sileria.android.Kit;
 public class SQService extends Service {
     TopLeftView sqTopLeftView;
     TopRightView sqTopRightView;
-    BottomLeftView sqBottomLeftView;
-    BottomRightView sqBottomRightView;
-    boolean leftView, rightView, leftBottomView, rightBottomView;
+    boolean leftView, rightView;
     Context context;
     private OrientationEventListener sqOrientationListener;
     
@@ -58,20 +54,10 @@ public class SQService extends Service {
             sqTopLeftView = new TopLeftView(context);
         }
 
-        rightView = settings.getBoolean("checkbox_rightbar", true);
-        if (rightView && sqTopRightView == null) {
-            sqTopRightView = new TopRightView(context);
-        }
-
-        leftBottomView = settings.getBoolean("checkbox_leftbottombar", true);
-        if (leftBottomView && sqBottomLeftView == null) {
-            sqBottomLeftView = new BottomLeftView(context);
-        }
-
-        rightBottomView = settings.getBoolean("checkbox_rightbottombar", true);
-        if (rightBottomView && sqBottomRightView == null) {
-            sqBottomRightView = new BottomRightView(context);
-        }
+//        rightView = settings.getBoolean("checkbox_rightbar", true);
+//        if (rightView && sqTopRightView == null) {
+//            sqTopRightView = new TopRightView(context);
+//        }
 
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
@@ -91,14 +77,8 @@ public class SQService extends Service {
         // Set the position of the Top left View
         if (leftView && sqTopLeftView != null) sqTopLeftView.updateViewParameter();
 
-        // Set the position of the Bottom left View
-        if (leftBottomView && sqBottomLeftView != null) sqBottomLeftView.updateViewParameter();
-
-        // Set the position of the Top Right View
-        if (rightView && sqTopRightView != null) sqTopRightView.updateViewParameter();
-
-        // Set the position of the Bottom Right View
-        if (rightBottomView && sqBottomRightView != null) sqBottomRightView.updateViewParameter();
+//        // Set the position of the Top Right View
+//        if (rightView && sqTopRightView != null) sqTopRightView.updateViewParameter();
 
     }
 
@@ -110,18 +90,12 @@ public class SQService extends Service {
          * so when we disable a particular view only that service is stop and only that view is removed from windows manager all other are unchanged
          * .So need to implement 4 services here
          */
-        removeBar(sqTopLeftView);
-        removeBar(sqTopRightView);
-        removeBar(sqBottomLeftView);
-        removeBar(sqBottomRightView);
+        removeBar(sqTopLeftView.getView());
         sqTopLeftView = null;
-        sqTopRightView = null;
-        sqBottomLeftView = null;
-        sqBottomRightView = null;
 
     }
 
-    private void removeBar(SQMainVeiw view) {
+    private void removeBar( View view) {
         if (view != null) {
             WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             wm.removeView(view);

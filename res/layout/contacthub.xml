@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contacthub"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top|left"
+    android:orientation="vertical"
+    android:paddingTop="5dip" >
+
+    <ImageView
+        android:id="@+id/facebook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/facebook"
+        android:orientation="vertical" >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/twitter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/twitter"
+        android:orientation="vertical" >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/linkedin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/linkedin"
+        android:orientation="vertical" >
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/mycontact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dip"
+        android:background="@drawable/linkedin"
+        android:orientation="vertical" >
+    </ImageView>
+
+</LinearLayout>

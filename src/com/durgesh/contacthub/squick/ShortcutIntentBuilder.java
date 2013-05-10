@@ -13,7 +13,7 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.durgesh.quick.squick;
+package com.durgesh.contacthub.squick;
 
 import android.app.Activity;
 import android.content.ContentResolver;

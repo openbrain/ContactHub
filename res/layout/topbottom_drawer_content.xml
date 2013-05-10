@@ -27,8 +27,8 @@
 
     <com.sileria.android.view.HorzListView
         android:id="@+id/topbottom_drawer_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
         android:layout_gravity="center|center_horizontal"
          >
         

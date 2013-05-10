@@ -13,7 +13,7 @@
   You should have received a copy of the GNU General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.durgesh.quick.squick;
+package com.durgesh.contacthub.squick;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -31,10 +31,10 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 
 import com.durgesh.R;
+import com.durgesh.contacthub.squick.SQDrawers.ItemClickListener;
+import com.durgesh.contacthub.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.model.ContactIconHelper;
 import com.durgesh.pref.SQPrefs;
-import com.durgesh.quick.squick.SQDrawers.ItemClickListener;
-import com.durgesh.quick.squick.ShortcutIntentBuilder.OnShortcutIntentCreatedListener;
 import com.durgesh.util.Constants;
 
 /**
@@ -42,7 +42,7 @@ import com.durgesh.util.Constants;
  * 
  * @author durgesht
  */
-public class SQDirectDialActivity extends SQDrawers implements ItemClickListener, OnShortcutIntentCreatedListener {
+public class DirectDialActivity extends SQDrawers implements ItemClickListener, OnShortcutIntentCreatedListener {
     private final OnShortcutIntentCreatedListener mListener = this;
 
     @Override

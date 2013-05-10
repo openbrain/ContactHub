@@ -38,27 +38,7 @@ public class TopLeftView extends SQMainVeiw {
         viewSelector(selector);
     }
 
-    @Override
-    public void onRightToLeft() {
-        launchShorcut();
-    }
-
-    @Override
-    public void onLeftToRight() {
-        launchShorcut();
-    }
-
-    @Override
-    public void onBottomToTop() {
-        launchShorcut();
-    }
-
-    @Override
-    public void onTopToBottom() {
-        launchShorcut();
-    }
-
     public void updateViewParameter() {
-        updateView(0, Constants.SQ_TOP_VIEW_POSITION_RATIO, Gravity.LEFT | Gravity.TOP);
+        updateView(0, Constants.RATIO, Gravity.LEFT | Gravity.TOP);
     }
 }
