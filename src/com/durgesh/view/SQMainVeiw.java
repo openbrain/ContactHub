@@ -16,24 +16,16 @@
 package com.durgesh.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.durgesh.R;
-import com.durgesh.contacthub.squick.DirectAppActivity;
-import com.durgesh.contacthub.squick.DirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -46,8 +38,8 @@ public abstract class SQMainVeiw extends View {
     public View sqView;
     private int sqScreenWidth;
     private int sqScreenHeight;
-    private static float WIDTH = 50;
-    private static final int HEIGHT = 300;
+    private static float WIDTH = 30;
+    private static final int HEIGHT = 260;
     // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
     int shortcutSelector;
     WindowManager windowsmanger;
@@ -56,7 +48,6 @@ public abstract class SQMainVeiw extends View {
     public SQMainVeiw(Context context) {
         super(context);
         this.context = context;
-        inflateView();
     }
 
     /**
@@ -64,10 +55,30 @@ public abstract class SQMainVeiw extends View {
      */
     public abstract void updateViewParameter();
 
-    private void inflateView() {
+    private void inflateView(String selector) {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         LayoutInflater view = LayoutInflater.from(context);
-        sqView = view.inflate(R.layout.contacthub, null);
+        if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
+            sqView = view.inflate(R.layout.contacthub, null);
+            shortcutSelector = Constants.PHONE_CALL;
+            ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);
+            facebookContact.setOnTouchListener(new FacebookView(context));
+            ImageView twitterContact = (ImageView) sqView.findViewById(R.id.twitter);
+            twitterContact.setOnTouchListener(new TwitterView(context));
+            ImageView linkedInContact = (ImageView) sqView.findViewById(R.id.linkedin);
+            linkedInContact.setOnTouchListener(new LinkedInView(context));
+        } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
+            sqView = view.inflate(R.layout.quickcontact, null);
+            shortcutSelector = Constants.MESSAGE;
+            ImageView call = (ImageView) sqView.findViewById(R.id.call);
+            call.setOnTouchListener(new CallView(context));
+            ImageView message = (ImageView) sqView.findViewById(R.id.message);
+            message.setOnTouchListener(new MessageView(context));
+            ImageView app = (ImageView) sqView.findViewById(R.id.app);
+            app.setOnTouchListener(new AppView(context));
+            ImageView contact = (ImageView) sqView.findViewById(R.id.mycontact);
+            contact.setOnTouchListener(new ContactView(context));
+        }
         // sqView.setOnTouchListener(this);
         windowsmanger.addView(sqView, makeOverlayParams());
     }
@@ -145,6 +156,7 @@ public abstract class SQMainVeiw extends View {
     }
 
     public void viewSelector(String selector) {
+        inflateView(selector);
         if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
             shortcutSelector = Constants.PHONE_CALL;
             ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);

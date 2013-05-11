@@ -54,10 +54,10 @@ public class SQService extends Service {
             sqTopLeftView = new TopLeftView(context);
         }
 
-//        rightView = settings.getBoolean("checkbox_rightbar", true);
-//        if (rightView && sqTopRightView == null) {
-//            sqTopRightView = new TopRightView(context);
-//        }
+        rightView = settings.getBoolean("checkbox_rightbar", true);
+        if (rightView && sqTopRightView == null) {
+            sqTopRightView = new TopRightView(context);
+        }
 
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
             @Override
@@ -77,8 +77,8 @@ public class SQService extends Service {
         // Set the position of the Top left View
         if (leftView && sqTopLeftView != null) sqTopLeftView.updateViewParameter();
 
-//        // Set the position of the Top Right View
-//        if (rightView && sqTopRightView != null) sqTopRightView.updateViewParameter();
+        // Set the position of the Top Right View
+        if (rightView && sqTopRightView != null) sqTopRightView.updateViewParameter();
 
     }
 
@@ -91,7 +91,9 @@ public class SQService extends Service {
          * .So need to implement 4 services here
          */
         removeBar(sqTopLeftView.getView());
+        removeBar(sqTopRightView.getView());
         sqTopLeftView = null;
+        sqTopRightView=null;
 
     }
 
