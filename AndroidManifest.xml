@@ -29,8 +29,10 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
- <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
 
     <application
         android:icon="@drawable/contacthub"
@@ -45,6 +47,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
@@ -57,11 +60,10 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                
             </intent-filter>
         </activity>
         <activity
-            android:name=".pref.SQPreference"
+            android:name="com.durgesh.pref.SQPreference"
             android:label="@string/application_name" >
         </activity>
         <activity
@@ -70,8 +72,9 @@
             android:label="@string/application_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" 
-                    android:configChanges="keyboardHidden|orientation"/>
+                <action
+                    android:name="android.intent.action.MAIN"
+                    android:configChanges="keyboardHidden|orientation" />
             </intent-filter>
         </activity>
         <activity
@@ -80,6 +83,12 @@
             android:label="@string/application_name"
             android:theme="@android:style/Theme.Dialog" >
         </activity>
+        <activity
+            android:name="org.brickred.socialauth.android.SocialAuthAdapter"
+            android:configChanges="orientation|keyboardHidden"
+            android:label="@string/application_name"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+        </activity>
 
         <receiver android:name="com.durgesh.service.SQBootReceiver" >
             <intent-filter>
@@ -87,7 +96,7 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.SQService" />
+        <service android:name="com.durgesh.service.SQService" />
 
         <provider
             android:name="com.durgesh.model.ContactIconProvider"

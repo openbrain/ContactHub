@@ -15,14 +15,23 @@
  */
 package com.durgesh.view;
 
+
+import org.brickred.socialauth.android.SocialAuthAdapter;
+import org.brickred.socialauth.android.SocialAuthAdapter.Provider;
+
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
 import android.preference.PreferenceManager;
 import android.view.Display;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 
 import com.durgesh.R;
@@ -50,6 +59,53 @@ public abstract class SQMainVeiw extends View {
         this.context = context;
     }
 
+    class GestureListener extends SimpleOnGestureListener implements OnTouchListener {
+
+        private static final int SWIPE_MIN_DISTANCE = 4;
+        private static final int SWIPE_THRESHOLD_VELOCITY = 10;
+        int provider;
+        GestureListener(int provider) {
+            this.provider =provider;
+        }
+        
+        
+        
+        private final GestureDetector gdt = new GestureDetector(this);
+        
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            gdt.onTouchEvent(event);
+            return true;
+            
+        }
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                launch();
+                return true;
+            } else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
+                launch();
+                return true;
+            }
+            if (e1.getY() - e2.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                launch();
+                return true;
+            } else if (e2.getY() - e1.getY() > SWIPE_MIN_DISTANCE && Math.abs(velocityY) > SWIPE_THRESHOLD_VELOCITY) {
+                launch();
+                return true;
+            }
+            return true;
+        }
+        
+        void launch()
+        {
+            Intent intent =new Intent(context,SocialAuthAdapter.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("PROVIDER", provider);
+            context.startActivity(intent);
+        }
+    }
+    
     /**
      * update the view position on the screen
      */
@@ -62,11 +118,11 @@ public abstract class SQMainVeiw extends View {
             sqView = view.inflate(R.layout.contacthub, null);
             shortcutSelector = Constants.PHONE_CALL;
             ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);
-            facebookContact.setOnTouchListener(new FacebookView(context));
+            facebookContact.setOnTouchListener(new GestureListener(0));
             ImageView twitterContact = (ImageView) sqView.findViewById(R.id.twitter);
-            twitterContact.setOnTouchListener(new TwitterView(context));
+            twitterContact.setOnTouchListener(new GestureListener( 1));
             ImageView linkedInContact = (ImageView) sqView.findViewById(R.id.linkedin);
-            linkedInContact.setOnTouchListener(new LinkedInView(context));
+            linkedInContact.setOnTouchListener(new GestureListener(2));
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
             sqView = view.inflate(R.layout.quickcontact, null);
             shortcutSelector = Constants.MESSAGE;
@@ -157,25 +213,6 @@ public abstract class SQMainVeiw extends View {
 
     public void viewSelector(String selector) {
         inflateView(selector);
-        if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
-            shortcutSelector = Constants.PHONE_CALL;
-            ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);
-            facebookContact.setOnTouchListener(new FacebookView(context));
-            ImageView twitterContact = (ImageView) sqView.findViewById(R.id.twitter);
-            twitterContact.setOnTouchListener(new TwitterView(context));
-            ImageView linkedInContact = (ImageView) sqView.findViewById(R.id.linkedin);
-            linkedInContact.setOnTouchListener(new LinkedInView(context));
-            // sqView.setBackgroundResource(R.drawable.facebook);
-        } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
-            shortcutSelector = Constants.MESSAGE;
-            // sqView.setBackgroundResource(R.drawable.twitter);
-        } else if (selector.equals(context.getResources().getString(R.string.pref_leftbottombar_title))) {
-            shortcutSelector = Constants.CONTACT;
-            // sqView.setBackgroundResource(R.drawable.linkedin);
-        } else if (selector.equals(context.getResources().getString(R.string.pref_rightbottombar_title))) {
-            shortcutSelector = Constants.APP;
-            // sqView.setBackgroundResource(R.drawable.linkedin);
-        }
     }
 
     /**

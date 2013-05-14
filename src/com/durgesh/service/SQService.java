@@ -51,12 +51,12 @@ public class SQService extends Service {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         leftView = settings.getBoolean("checkbox_leftbar", true);
         if (leftView && sqTopLeftView == null) {
-            sqTopLeftView = new TopLeftView(context);
+            sqTopLeftView = new TopLeftView(this);
         }
 
         rightView = settings.getBoolean("checkbox_rightbar", true);
         if (rightView && sqTopRightView == null) {
-            sqTopRightView = new TopRightView(context);
+            sqTopRightView = new TopRightView(this);
         }
 
         sqOrientationListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
