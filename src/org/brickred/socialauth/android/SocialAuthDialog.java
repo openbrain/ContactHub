@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.brickred.socialauth.AuthProvider;
 import org.brickred.socialauth.SocialAuthManager;
-import org.brickred.socialauth.android.SocialAuthAdapter.Provider;
 import org.brickred.socialauth.util.AccessGrant;
 
 import android.app.Activity;

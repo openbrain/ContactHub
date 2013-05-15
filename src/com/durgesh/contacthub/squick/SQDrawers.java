@@ -18,6 +18,8 @@ package com.durgesh.contacthub.squick;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.brickred.socialauth.android.Provider;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -134,7 +136,7 @@ public abstract class SQDrawers extends Activity {
     }
 
     private void init() {
-        selector = getIntent().getIntExtra(Constants.SUPERQUICK, Constants.DO_NOTHING);
+        selector =getIntent().getIntExtra(Constants.SUPERQUICK,Constants.DO_NOTHING);
         PREFIX = selector == Constants.PHONE_CALL ? Intent.ACTION_CALL : Intent.ACTION_SENDTO;
         sqTapListener = new SQTapListener(this);
         getShortCutsCount();

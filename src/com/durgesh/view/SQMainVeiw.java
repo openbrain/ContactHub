@@ -15,26 +15,27 @@
  */
 package com.durgesh.view;
 
-
+import org.brickred.socialauth.android.Provider;
 import org.brickred.socialauth.android.SocialAuthAdapter;
-import org.brickred.socialauth.android.SocialAuthAdapter.Provider;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.Display;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.view.View.OnTouchListener;
 import android.widget.ImageView;
 
 import com.durgesh.R;
+import com.durgesh.contacthub.squick.DirectAppActivity;
+import com.durgesh.contacthub.squick.DirectDialActivity;
 import com.durgesh.util.Constants;
 
 /**
@@ -49,8 +50,6 @@ public abstract class SQMainVeiw extends View {
     private int sqScreenHeight;
     private static float WIDTH = 30;
     private static final int HEIGHT = 260;
-    // Represent on which sqbar is swap and what shortcut it has directdial,directmessage,app or contact
-    int shortcutSelector;
     WindowManager windowsmanger;
     ImageView facebook, twitter, linkdin, contact;
 
@@ -63,21 +62,18 @@ public abstract class SQMainVeiw extends View {
 
         private static final int SWIPE_MIN_DISTANCE = 4;
         private static final int SWIPE_THRESHOLD_VELOCITY = 10;
-        int provider;
-        GestureListener(int provider) {
-            this.provider =provider;
-        }
-        
-        
-        
+        Provider provider;
+
         private final GestureDetector gdt = new GestureDetector(this);
-        
+
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             gdt.onTouchEvent(event);
+            provider = (Provider) v.getTag();
             return true;
-            
+
         }
+
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY) {
@@ -96,16 +92,51 @@ public abstract class SQMainVeiw extends View {
             }
             return true;
         }
-        
-        void launch()
-        {
-            Intent intent =new Intent(context,SocialAuthAdapter.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra("PROVIDER", provider);
-            context.startActivity(intent);
+
+        /**
+         * Launch the shortcut selector base on the view on which the finger is swap
+         */
+        protected void launch() {
+            switch (provider) {
+            case FACEBOOK:
+            case TWITTER:
+            case LINKEDIN: {
+                Intent intent = new Intent(context, SocialAuthAdapter.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("PROVIDER", provider);
+                context.startActivity(intent);
+            }
+                break;
+            case CALL:
+            case MESSAGE: {
+                Intent dialerActivity = new Intent(context, DirectDialActivity.class);
+                dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                dialerActivity.putExtra(Constants.SUPERQUICK, Provider.CALL == provider ? 1 : 2);
+                context.startActivity(dialerActivity);
+                break;
+            }
+            case APP: {
+                Intent dialerActivity = new Intent(context, DirectAppActivity.class);
+                dialerActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                dialerActivity.putExtra(Constants.SUPERQUICK, 3);
+                context.startActivity(dialerActivity);
+                break;
+            }
+            case CONTACT: {
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("content://contacts/people/"));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                context.startActivity(intent);
+                break;
+            }
+            default:
+                break;
+            }
         }
+
     }
-    
+
     /**
      * update the view position on the screen
      */
@@ -114,26 +145,33 @@ public abstract class SQMainVeiw extends View {
     private void inflateView(String selector) {
         windowsmanger = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         LayoutInflater view = LayoutInflater.from(context);
+        // Fly weight pattern not using multiple instance of listener
+        GestureListener guestListener = new GestureListener();
         if (selector.equals(context.getResources().getString(R.string.pref_lefbar_title))) {
             sqView = view.inflate(R.layout.contacthub, null);
-            shortcutSelector = Constants.PHONE_CALL;
             ImageView facebookContact = (ImageView) sqView.findViewById(R.id.facebook);
-            facebookContact.setOnTouchListener(new GestureListener(0));
+            facebookContact.setTag(Provider.FACEBOOK);
+            facebookContact.setOnTouchListener(guestListener);
             ImageView twitterContact = (ImageView) sqView.findViewById(R.id.twitter);
-            twitterContact.setOnTouchListener(new GestureListener( 1));
+            twitterContact.setTag(Provider.TWITTER);
+            twitterContact.setOnTouchListener(guestListener);
             ImageView linkedInContact = (ImageView) sqView.findViewById(R.id.linkedin);
-            linkedInContact.setOnTouchListener(new GestureListener(2));
+            linkedInContact.setTag(Provider.LINKEDIN);
+            linkedInContact.setOnTouchListener(guestListener);
         } else if (selector.equals(context.getResources().getString(R.string.pref_rightbare_title))) {
             sqView = view.inflate(R.layout.quickcontact, null);
-            shortcutSelector = Constants.MESSAGE;
             ImageView call = (ImageView) sqView.findViewById(R.id.call);
-            call.setOnTouchListener(new CallView(context));
+            call.setTag(Provider.CALL);
+            call.setOnTouchListener(guestListener);
             ImageView message = (ImageView) sqView.findViewById(R.id.message);
-            message.setOnTouchListener(new MessageView(context));
+            message.setTag(Provider.MESSAGE);
+            message.setOnTouchListener(guestListener);
             ImageView app = (ImageView) sqView.findViewById(R.id.app);
-            app.setOnTouchListener(new AppView(context));
+            app.setTag(Provider.APP);
+            app.setOnTouchListener(guestListener);
             ImageView contact = (ImageView) sqView.findViewById(R.id.mycontact);
-            contact.setOnTouchListener(new ContactView(context));
+            contact.setTag(Provider.CONTACT);
+            contact.setOnTouchListener(guestListener);
         }
         // sqView.setOnTouchListener(this);
         windowsmanger.addView(sqView, makeOverlayParams());
